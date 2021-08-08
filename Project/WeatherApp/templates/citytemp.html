@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/a1d8d0cb6f.js" crossorigin="anonymous"></script>
+  <style>
+      body{
+        
+          background-image: url('static/Weatherbg1.jpg');
+          text-align: center;
+      }
+      h1{
+        color: #123c69;
+          margin: 2% 0 5%;
+      }
+      form{
+          margin: 5% 0;
+      }
+      label{
+        color: #123c69;
+          margin-right: 2%;
+          font-size: 20px;
+      }
+      .btn{
+          margin-left: 3%;
+      }
+      .card{
+          background-color: teal;
+          margin: 5% 0;
+      }
+      .morning{
+          color: orange;
+      }
+      .night{
+          color: gray;
+      }
+      .lck{
+          display: inline-block;
+      }
+      .icon{
+          position: absolute;
+          margin-right: 0px;
+         font-size: 25px;
+          top: 10px;
+          right: 10px;
+      }
+
+      .fa-times-circle:hover{
+          color: red;
+      }
+      .card-title{
+          font-size: 25px;
+      }
+      .fa-temperature-high{
+          color: seagreen;
+          font-size: 30px;
+      }
+      .fa-cloud-rain{
+          color: #15AABF;
+          font-size: 30px;
+      }
+      .btn{
+        color: #123c69;
+        background-color: teal;
+      }
+      .size{
+          font-size: 20px;
+      }
+    /* .card{
+        display: inline-block;
+        width: 200px;
+    } */
+</style>
+    <title>Document</title>
+  
+</head>
+<body>
+    <div class="container">
+
+        <h1>City Weather</h1>
+        <form action="" method="POST">{%csrf_token%}
+            {{form}}
+            <input type="submit" value="Search" class="btn ">
+        </form>
+
+       <div class="row">
+
+       
+        {% for city in cities%}
+           <div class="col-md-4 col-sm-6">
+
+               <div class="card deck"  >
+                   <div class="card-body">
+                     <p class="card-title  lck ">{{city.cityName}} <i class="{{city.cityName}}"></i></p>
+                     <p class="icon lck"> <a href="/delete/{{city.id}}" class="card-link"><i class="far fa-times-circle"></i></a></p>
+                    
+                     <p class="card-text "><i class="fas fa-temperature-high"></i><span class="{{city.cityName}} size"></span></p>
+                     <p class="card-text "><i class="fas fa-cloud-rain"></i><span class="{{city.cityName}} size"></span></p>
+                    
+                     
+                   </div>
+                </div>
+           </div>
+                {%endfor%}
+    </div>
+        
+   
+        
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+    <script>
+        const arr=[]
+        
+        {%for city in cities%}
+        
+         arr.push('{{city.cityName}}')
+         {% endfor%}
+        
+        for( i=0;i<arr.length;i++){
+
+            const api3='https://api.weatherapi.com/v1/current.json?key=3486b9b007ee4fb4a04213828210708&q='+arr[i]+'&aqi=no'
+           const cityclass=document.querySelectorAll('.'+arr[i])
+           
+           const city2=arr[i]
+            fetch(api3)
+  .then(response => response.json())
+  .then(data => {console.log(data)
+  const {temp_c,humidity,cloud}=data.current
+  const {localtime}=data.location
+  const time=parseInt(localtime.slice(11,13))
+  if(time>6 &&time<19){
+      cityclass[0].classList.add("morning")
+      if(cloud<=20)
+      {
+          cityclass[0].classList.add("fas");
+          cityclass[0].classList.add("fa-sun");
+          
+
+      }else if(cloud<=60){
+        cityclass[0].classList.add("fas");
+          cityclass[0].classList.add("fa-cloud-sun");
+      }else {
+        cityclass[0].classList.add("fas");
+          cityclass[0].classList.add("fa-cloud");
+      }
+  }
+  else{
+    cityclass[0].classList.add("night")
+      if(cloud<=30){
+
+          cityclass[0].classList.add("far");
+          cityclass[0].classList.add("fa-moon");
+      }else if(cloud <=70){
+        
+        cityclass[0].classList.add("fas");
+          cityclass[0].classList.add("fa-cloud-moon");
+      }else {
+        cityclass[0].classList.add("fas");
+          cityclass[0].classList.add("fa-cloud");
+      }
+    
+      
+  }
+  
+ 
+      cityclass[1].textContent=" : " +temp_c+"C"
+      cityclass[2].textContent=" : "+humidity+"%"
+  
+  console.log(type(temp_c))}
+  );
+  }
+
+      
+      
+    </script>
+</body>
+</html>
